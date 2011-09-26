@@ -37,7 +37,7 @@ module Guard
     end
 
     def run_on_change(paths)
-      UI.info "Updated #{ paths.join(', ') }", :reset => true
+      UI.info "Pushing #{ paths.join(', ') }", :reset => true
       ::Pusher['guard-pusher'].trigger(@options[:event] || 'guard', {:paths => paths})
     end
 
