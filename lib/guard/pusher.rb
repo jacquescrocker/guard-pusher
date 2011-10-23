@@ -13,7 +13,7 @@ module Guard
         ::Pusher.send("#{config}=", value)
       }
 
-      ::Pusher['guard-pusher']
+      ::Pusher[options[:channel] || 'guard-pusher']
 
       rescue ::Pusher::ConfigurationError
     end
@@ -22,6 +22,8 @@ module Guard
       super
 
       @options = options
+      @options[:channel] ||= 'guard-pusher'
+      @options[:event] ||= 'guard'
 
       config = if File.file?('config/pusher.yml')
         YAML.load_file('config/pusher.yml')['development']
@@ -38,7 +40,7 @@ module Guard
 
     def run_on_change(paths)
       UI.info "Pushing #{ paths.join(', ') }", :reset => true
-      ::Pusher['guard-pusher'].trigger(@options[:event] || 'guard', {:paths => paths})
+      ::Pusher[@options[:channel]].trigger(@options[:event], {:paths => paths})
     end
 
   end
